@@ -77,7 +77,7 @@ def score_stat_ci(
     for i in range(n_bootstraps):
         readers = np.random.randint(0, len(y_preds), len(y_preds))
         indices = np.random.randint(0, len(y_true), len(y_true))
-        if reject_one_class_samples and len(np.unique(y_true[indices])) < 2:
+        if reject_one_class_samples and len(y_true.iloc[indices].unique()) < 2:
             continue
         reader_scores = []
         for r in readers:
