@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import percentileofscore
+from pandas import Series
 
 
 def score_ci(
@@ -66,8 +67,8 @@ def score_stat_ci(
     :return: Mean score statistic evaluated on labels and predictions, lower confidence interval, upper confidence
     interval, array of bootstrapped scores.
     """
-
-    y_true = np.array(y_true)
+    if not isinstance(y_true, Series):
+        y_true = Series(y_true)
     y_preds = np.atleast_2d(y_preds)
     assert all(len(y_true) == len(y) for y in y_preds)
 
@@ -80,7 +81,8 @@ def score_stat_ci(
             continue
         reader_scores = []
         for r in readers:
-            reader_scores.append(score_fun(y_true[indices], y_preds[r][indices]))
+            reader_scores.append(score_fun(y_true.iloc[indices],
+                                           y_preds[r][indices]))
         scores.append(stat_fun(reader_scores))
 
     mean_score = np.mean(scores)
